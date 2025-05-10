@@ -1,0 +1,596 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<link rel="icon" href="images/clickbait.jpg">
+		<title>Kritisk Klik</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+			body {
+				font-family: 'DejaVu Sans Mono', monospace;
+				background-color: #1e1e1e;
+				color: #e1e1e1;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				margin: 0;
+			}
+			.container {
+				background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+				border-radius: 15px;
+				padding: 40px;
+				max-width: 700px;
+				box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+				text-align: center;
+			}
+			h1, h2 {
+				color: #ffd700;
+				font-weight: bold;
+			}
+			.btn {
+				display: block;
+				background-color: #444;
+				color: #ffd700;
+				border: 2px solid #ffd700;
+				border-radius: 25px;
+				padding: 15px 20px;
+				margin: 10px auto;
+				font-size: 18px;
+				cursor: pointer;
+				transition: all 0.3s ease;
+			}
+			.btn:hover {
+				background-color: #ffd700;
+				color: #1e1e1e;
+			}
+			.hidden {
+				display: none;
+			}
+			#feedback {
+				margin-top: 20px;
+				font-weight: bold;
+				color: #ffd700;
+			}
+			#question-image {
+				width: 100%;
+				max-height: 300px;
+				object-fit: cover;
+				border-radius: 10px;
+				margin-bottom: 20px;
+			}
+			#points-display {
+				margin-top: 20px;
+				font-size: 20px;
+				color: #ffd700;
+				font-weight: bold;
+			}
+			p {
+				line-height: 1.6;
+				font-family: 'DejaVu Sans Mono', monospace
+			}
+			/* Update navigation font to match the rest of the page */
+			#nav ul li a {
+				font-family: 'DejaVu Sans Mono', monospace;
+				font-family: Arial, sans-serif; /* Replace with the font-family used on other pages */
+				}
+			#timer-container {
+				margin-top: 10px;
+				width: 100%;
+				background-color: #444;
+				border-radius: 10px;
+				overflow: hidden;
+				position: relative;
+				height: 20px;
+			}
+
+			#timer-bar {
+				width: 100%;
+				height: 100%;
+				background: linear-gradient(90deg, #ffd700, #ff4500);
+				transition: width 1s linear;
+			}
+
+			#timer-text {
+				position: absolute;
+				width: 100%;
+				text-align: center;
+				color: #fff;
+				font-size: 14px;
+				line-height: 20px;
+				font-family: 'DejaVu Sans Mono', monospace;
+				opacity: 1;
+				transition: opacity 0.3s ease;
+				}
+			#timer-text.fade-out {
+				opacity: 0;
+			}
+			#header {
+				background: rgba(39, 40, 51, 0.965);
+		box-shadow: 0 0 0.25em 0 rgba(0, 0, 0, 0.25);
+		cursor: default;
+		height: 3.5em;
+		left: 0;
+		line-height: 3.5em;
+		position: fixed;
+		top: 0;
+		width: 100%;
+		z-index: 100;
+			}
+
+			#page-wrapper {
+				padding-top: 80px; /* Add padding to prevent overlap with the fixed header */
+			}
+
+			#nav ul {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				display: flex;
+				justify-content: flex-end; /* Align navigation items to the right */
+			}
+
+			#nav ul li {
+				margin-left: 20px;
+			}
+
+			#nav ul li a {
+				font-family: "Roboto", Helvetica, sans-serif;
+				font-size: 16px;
+				color: #ccc;
+				text-decoration: none;
+				transition: color 0.3s ease;
+			}
+
+			#nav ul li a:hover {
+				color: #ffd700;
+			}
+		</style>
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+		<script>
+			// Initialize Supabase
+			const supabaseUrl = 'https://your-supabase-url.supabase.co'; // Replace with your Supabase URL
+			const supabaseKey = 'your-supabase-anon-key'; // Replace with your Supabase anon key
+			const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+			// Check if user is logged in
+			async function checkAuth() {
+				const { data: { session } } = await supabase.auth.getSession();
+				if (!session) {
+					showLogin();
+				} else {
+					document.getElementById("journalist-name").textContent = session.user.email;
+					startGame();
+				}
+			}
+
+			// Show Google login button
+			function showLogin() {
+				document.getElementById("login-container").classList.remove("hidden");
+				document.getElementById("intro").classList.add("hidden");
+			}
+
+			// Handle Google login
+			async function loginWithGoogle() {
+				const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
+				if (error) {
+					alert('Login failed: ' + error.message);
+				}
+			}
+
+			// Handle logout
+			async function logout() {
+				await supabase.auth.signOut();
+				location.reload();
+			}
+
+			// Check authentication on page load
+			document.addEventListener('DOMContentLoaded', checkAuth);
+		</script>
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<header id="header">
+					<h1 id="logo" style="display: flex; align-items: center; gap: 10px;">
+						<a href="index.html">KRITISK KLIK</a>
+						<img src="https://corolab.dk/wp-content/uploads/HTX-Roskilde.png" alt="HTX Roskilde Logo" style="max-width: 50px; height: auto;">
+					</h1>
+					<nav id="nav">
+						<ul>
+							<li><a href="index.html">Hjem</a></li>
+							<li>
+								<a href="#" style="position: relative; padding-right: 20px;">
+									Mere
+									<span style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); font-size: 0.8em;">▼</span>
+								</a>
+								<ul>
+									<li><a href="left-sidebar.html">AI Bot</a></li>
+									<li><a href="right-sidebar.html">TikTok Vs X</a></li>
+									<li><a href="no-sidebar.html">Test Din Viden</a></li>
+									<li><a href="sandhed.html">Sandhed eller Misinformation?</a></li>
+								</ul>
+							</li>
+							<li><a href="elements.html">Spil</a></li>
+							<li id="auth-section">
+								<a href="om-os.html" class="button primary">Om os</a>
+							</li>
+						</ul>
+					</nav>
+				</header>
+				
+		
+		
+		
+		
+		</div>
+		<div class="container">
+			<div id="login-container" class="hidden">
+				<h1>Log ind for at spille</h1>
+				<p>Du skal logge ind med din Google-konto for at spille spillet.</p>
+				<button class="btn" onclick="loginWithGoogle()">Log ind med Google</button>
+			</div>
+
+			<div id="game-container" class="hidden">
+				<h1>Fake News Spillet</h1>
+				<p>Tag rollen som en nyhedsskaber og lær, hvordan misinformation spreder sig.</p>
+				<button class="btn" onclick="startGame()">Start spillet</button>
+			</div>
+
+			<div id="intro">
+				<h1>Fake News Spillet</h1>
+				<p>Tag rollen som en nyhedsskaber og lær, hvordan misinformation spreder sig.</p>
+				<button class="btn" onclick="startGame()">Start spillet</button>
+			</div>
+
+			<div id="login-container" class="hidden">
+				<h1>Log ind for at spille</h1>
+				<p>Du skal logge ind med din Google-konto for at spille spillet.</p>
+				<button class="btn" onclick="loginWithGoogle()">Log ind med Google</button>
+			</div>
+
+			<div id="conversation">
+				<h1 id="conversation-title">Hej der! Godt at se dig.</h1>
+				<p id="conversation-text">Indtast dit navn og efternavn <span style="color: rgb(239, 26, 23);">(Ikke dit rigtige navn)</span> for at komme i gang: </p>
+					<div id="name-input-container" style="margin-bottom: 20px; transition: opacity 0.5s ease;">
+						<label for="first-name" style="display:block; font-size:16px; margin-bottom:5px;">Fornavn:</label>
+						<input type="text" id="first-name" placeholder="Fornavn" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:5px; font-size:16px; box-sizing:border-box; margin-bottom:10px;" />
+						<label for="last-name" style="display:block; font-size:16px; margin-bottom:5px;">Efternavn:</label>
+						<input type="text" id="last-name" placeholder="Efternavn" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:5px; font-size:16px; box-sizing:border-box;" />
+					</div>
+				<button class="btn" onclick="nextDialogue()">Det er korrekt</button>
+			</div>
+
+			<div id="game" class="hidden">
+				<h2 id="question-title"></h2>
+				<img id="question-image" src="" alt="Question Image">
+				<p id="question-text"></p>
+				<button class="btn" id="btn0" onclick="chooseAnswer(0)"></button>
+				<button class="btn" id="btn1" onclick="chooseAnswer(1)"></button>
+				<div id="feedback"></div>
+				<div id="points-display">Point: <span id="current-points">0</span></div>
+			</div>
+
+			<div id="end" class="hidden">
+				<h2>Du er færdig!</h2>
+				<p>Du har opnået <span id="points"></span> point!</p>
+				<button class="btn" onclick="restartGame()">Spil igen</button>
+			</div>
+		</div>
+
+		<div id="timer-points" class="hidden">
+			<span id="points-display">Din tid: <span id="current-points">60 Sekunder</span></span>
+			<div id="timer-container">
+				<div id="timer-bar"></div>
+				<div id="timer-text">60 sekunder</div>
+			</div>
+			<div id="journalist-name-box" style="margin-top: 10px; background: #444; color: #ffd700; padding: 5px 10px; border-radius: 5px; font-size: 14px; font-weight: bold; text-align: center;">
+				Dit journalistiske navn: <span id="journalist-name"></span>
+			</div>
+		</div>
+
+		<script>
+			const questions = [
+				{
+					title: "Start med clickbait!",
+					text: "<b style='font-size: 1.2em;'>Du skal vælge overskriften på din nyhedsartikel. Hvad vælger du?</b>",
+					image: "images/overskrift.jpg.png",
+					options: [
+						{ text: "Ekspert forklarer: Derfor er vacciner sikre", points: 0, feedback: "Det er sandt, men ikke så klikvenligt." },
+						{ text: "Chokerende sandhed: Vacciner er farlige!?", points: 10, feedback: "Du valgte clickbait – mange klik, men det er misinformation!" }
+					]
+				},
+				{
+					title: "Kilder eller konspiration?",
+					text: "<b style='font-size: 1.2em;'>Du skal finde belæg for din artikel. Hvad vælger du?</b>",
+					image: "images/yt.png",
+					options: [
+						{ text: "Henviser til WHO og sundhedsmyndigheder", points: 0, feedback: "Godt valg – troværdige kilder." },
+						{ text: "Citerer anonym kilde fra YouTube", points: 10, feedback: "Ikke troværdigt – men det lokker læsere!" }
+					]
+				},
+				{
+					title: "Manipulation med billeder",
+					text: "<b style='font-size: 1.2em;'>Vil du bruge et billede, der kan skabe en anden opfattelse af virkeligheden?</b>",
+					image: "images/sy.jpg",
+					options: [
+						{ text: "Ja, det tiltrækker opmærksomhed", points: 10, feedback: "Det er manipulation, men det virker!" },
+						{ text: "Nej, jeg bruger ægte dokumentation", points: 0, feedback: "God journalistisk praksis." }
+					]
+				},
+				{
+					title: "Deling på sociale medier",
+					text: "<b style='font-size: 1.2em;'>Hvordan spreder du din artikel?</b>",
+					image: "images/social_media.jpg",
+					options: [
+						{ text: "Bruger bots og falske profiler", points: 10, feedback: "Det spreder misinformation hurtigt." },
+						{ text: "Organisk deling via vennegrupper", points: 2, feedback: "Langsommere, men ægte deling." }
+					]
+				},
+				{
+					title: "Fake News afsløres",
+					text: "<b style='font-size: 1.2em;'>Folk begynder at stille spørgsmålstegn ved din artikel. Hvad gør du?</b>",
+					image: "images/exposed.jpg",
+					options: [
+						{ text: "Ignorer det og post mere", points: 10, feedback: "Du fortsætter misinformationen." },
+						{ text: "Beklager og fjerner artiklen", points: -5, feedback: "Du tager ansvar – det koster følgere, men er korrekt." }
+					]
+				}
+			];
+
+			let current = 0;
+			let totalPoints = 0;
+			let timerInterval;
+			let timeLeft = 60;
+
+			function startGame() {
+				const fullName = localStorage.getItem("playerFullName");
+				if (fullName) {
+					document.getElementById("journalist-name").textContent = fullName;
+				}
+				document.getElementById("intro").classList.add("hidden");
+				document.getElementById("game").classList.remove("hidden");
+				document.getElementById("timer-points").classList.remove("hidden");
+				resetTimer();
+				showQuestion();
+			}
+
+			function resetTimer() {
+				timeLeft = 60;
+				updateTimerDisplay();
+				clearInterval(timerInterval);
+				timerInterval = setInterval(() => {
+					timeLeft--;
+					updateTimerDisplay();
+					if (timeLeft <= 0) {
+						clearInterval(timerInterval);
+						endGame();
+					}
+				}, 1000);
+			}
+
+			function updateTimerDisplay() {
+				const timerBar = document.getElementById("timer-bar");
+				const timerText = document.getElementById("timer-text");
+				const pointsDisplay = document.querySelector("#timer-points #points-display span");
+
+				// Add fade-out effect
+				timerText.classList.add("fade-out");
+				pointsDisplay.classList.add("fade-out");
+
+				setTimeout(() => {
+					// Update the text after fade-out
+					timerBar.style.width = `${(timeLeft / 60) * 100}%`;
+					timerText.textContent = `${timeLeft} sekunder`;
+					pointsDisplay.textContent = `${timeLeft} Sekunder`;
+
+					// Remove fade-out and trigger fade-in
+					timerText.classList.remove("fade-out");
+					pointsDisplay.classList.remove("fade-out");
+				}, 300); // Match the transition duration
+			}
+
+			function showQuestion() {
+				const q = questions[current];
+				document.getElementById("question-title").textContent = q.title;
+				document.getElementById("question-text").innerHTML = q.text;
+				document.getElementById("question-image").src = q.image;
+				document.getElementById("btn0").textContent = q.options[0].text;
+				document.getElementById("btn1").textContent = q.options[1].text;
+				document.getElementById("feedback").textContent = "";
+			}
+
+			function chooseAnswer(index) {
+				const q = questions[current];
+				const choice = q.options[index];
+				totalPoints += choice.points;
+				document.getElementById("feedback").textContent = choice.feedback;
+				document.getElementById("current-points").textContent = totalPoints;
+				setTimeout(() => {
+					current++;
+					if (current < questions.length) {
+						showQuestion();
+					} else {
+						clearInterval(timerInterval);
+						endGame();
+					}
+				}, 1500);
+			}
+
+			function endGame() {
+				document.getElementById("game").classList.add("hidden");
+				document.getElementById("timer-points").classList.add("hidden");
+				document.getElementById("end").classList.remove("hidden");
+				document.getElementById("points").textContent = totalPoints;
+
+				// Assign a single title based on total points
+				const title = assignTitle(totalPoints);
+				document.getElementById("end").innerHTML += `
+					<p style="font-weight: bold; color: #ffd700;">Din titel: ${title}</p>
+				`;
+			}
+
+			function assignTitle(points) {
+				if (points <= 10) {
+					return "Fact Checker";
+				} else if (points <= 30) {
+					return "Neutral Nyhedsskaber";
+				} else {
+					return "Tvivlsom Troll";
+				}
+			}
+
+			function restartGame() {
+				current = 0;
+				totalPoints = 0;
+				document.getElementById("end").classList.add("hidden");
+				document.getElementById("intro").classList.remove("hidden");
+				document.getElementById("current-points").textContent = totalPoints;
+				document.getElementById("timer-points").classList.add("hidden");
+				document.getElementById("journalist-name").textContent = ""; // Clear the name
+				clearInterval(timerInterval);
+				const titleElement = document.querySelector("#end p:last-child");
+				if (titleElement) {
+					titleElement.remove();
+					document.getElementById("end").innerHTML = `
+						<h2>Du er færdig!</h2>
+						<p>Du har opnået <span id="points"></span> point!</p>
+						<button class="btn" onclick="restartGame()">Spil igen</button>
+					`;
+				}
+			}
+
+			let dialogueIndex = 0;
+			const dialogues = [
+				{ title: "Hej der! Godt at se dig.", text: "Du er her for stillingen som misinformation og fake news-tycoon, korrekt?", button: "Det er korrekt" },
+				{ title: "Fantastisk!", text: "Din opgave er at sprede misinformation og se, hvor langt du kan nå.", button: "Lad os starte" },
+				{ title: "Lad os komme i gang!", text: "Husk, jo mere kontroversielt, jo flere klik!", button: "Start spillet" }
+			];
+
+			function nextDialogue() {
+				const firstName = document.getElementById("first-name").value.trim();
+				const lastName = document.getElementById("last-name").value.trim();
+
+				if (dialogueIndex === 0 && (!firstName || !lastName)) {
+					alert("Indtast venligst både fornavn og efternavn for at fortsætte.");
+					return;
+				}
+
+				if (dialogueIndex === 0) {
+					// Save the full name for later use
+					const fullName = `${firstName} ${lastName}`;
+					localStorage.setItem("playerFullName", fullName);
+
+					// Fade out the name input container
+					const nameInputContainer = document.getElementById("name-input-container");
+					nameInputContainer.style.opacity = "0";
+					setTimeout(() => {
+						nameInputContainer.style.display = "none";
+					}, 500); // Match the transition duration
+				}
+
+				dialogueIndex++;
+				if (dialogueIndex < dialogues.length) {
+					const dialogue = dialogues[dialogueIndex];
+					document.getElementById("conversation-title").textContent = dialogue.title;
+					document.getElementById("conversation-text").textContent = dialogue.text;
+					document.querySelector("#conversation .btn").textContent = dialogue.button;
+				} else {
+					document.getElementById("conversation").classList.add("hidden");
+					startGame();
+				}
+			}
+
+			// Ensure the conversation starts first
+			document.addEventListener('DOMContentLoaded', function() {
+				document.getElementById("intro").classList.add("hidden");
+				document.getElementById("conversation").classList.remove("hidden");
+			});
+
+			// Open modal
+			document.querySelector('.button.primary[href="#signup-modal"]').addEventListener('click', function(event) {
+				event.preventDefault();
+				const modal = document.getElementById('signup-modal');
+				const overlay = document.getElementById('modal-overlay');
+				modal.style.display = 'block';
+				overlay.style.display = 'block';
+				setTimeout(() => {
+					modal.style.transform = 'translate(-50%, -50%) scale(1)';
+					modal.style.opacity = '1';
+				}, 10);
+			});
+
+			// Close modal
+			function closeModal() {
+				const modal = document.getElementById('signup-modal');
+				const overlay = document.getElementById('modal-overlay');
+				modal.style.transform = 'translate(-50%, -50%) scale(0.9)';
+				modal.style.opacity = '0';
+				setTimeout(() => {
+					modal.style.display = 'none';
+					overlay.style.display = 'none';
+				}, 300);
+			}
+
+			// Handle form submission
+			document.getElementById('signup-form').addEventListener('submit', function(event) {
+				event.preventDefault();
+				const email = document.getElementById('signup-email').value;
+				const password = document.getElementById('signup-password').value;
+
+				// Simulate sign-up and login
+				if (email && password) {
+					alert('Sign-up successful!');
+					closeModal();
+
+					// Save signed-in state in localStorage
+					localStorage.setItem('signedInUser', email);
+
+					// Update UI to show logged-in state
+					updateAuthSection(email);
+				}
+			});
+
+			// Update the auth section based on signed-in state
+			function updateAuthSection(email) {
+				const authSection = document.getElementById('auth-section');
+				authSection.innerHTML = `
+					<span style="margin-right:10px; font-size:14px; color:white;">Logged in as: ${email}</span>
+					<a href="#" onclick="logout()" class="button" style="padding:5px 15px; background:#FF4D4D; color:white; border:none; border-radius:5px; cursor:pointer; font-size:14px;">Profil</a>
+				`;
+			}
+
+			// Log out function
+			function logout() {
+				localStorage.removeItem('signedInUser');
+				const authSection = document.getElementById('auth-section');
+				authSection.innerHTML = `<a href="spil.html?redirect=${window.location.pathname}" class="button primary">Profil</a>`;
+			}
+
+			// Check for signed-in state on page load
+			document.addEventListener('DOMContentLoaded', function() {
+				const signedInUser = localStorage.getItem('signedInUser');
+				if (signedInUser) {
+					updateAuthSection(signedInUser);
+				}
+			});
+		</script>
+
+	</body>
+</html>
+
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.scrolly.min.js"></script>
+<script src="assets/js/jquery.dropotron.min.js"></script>
+<script src="assets/js/jquery.scrollex.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+
+</body>
+</html>

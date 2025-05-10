@@ -1,0 +1,331 @@
+<<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<link rel="icon" href="images/clickbait.jpg">
+		<title>Kritisk Klik</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+		<style>
+			/* Custom styles for the game */
+			.container {
+				text-align: center;
+				padding: 20px;
+			}
+			.question {
+				margin: 20px 0;
+				font-size: 18px;
+				font-weight: bold;
+			}
+			.options {
+				display: flex;
+				justify-content: center;
+				gap: 20px;
+			}
+			.options button {
+				padding: 10px 20px;
+				font-size: 16px;
+				cursor: pointer;
+				border: none;
+				border-radius: 5px;
+				background-color: #444;
+				color: #fff;
+				transition: background-color 0.3s;
+				display: none; /* Hide buttons initially */
+			}
+
+			.options button.fade-in {
+				display: inline-block; /* Show buttons when they fade in */
+				opacity: 0;
+				animation: fadeIn 3s forwards;
+			}
+
+			.options button:hover {
+				background-color: #ffd700;
+				color: #000;
+			}
+			#feedback {
+				margin-top: 20px;
+				font-size: 16px;
+				font-weight: bold;
+			}
+			#points-display {
+				margin-top: 20px;
+				font-size: 18px;
+				font-weight: bold;
+				color: #ffd700;
+			}
+			#question-image {
+				width: 100%;
+				max-width: 600px;
+				margin: 20px 0;
+				border-radius: 10px;
+				display: none; /* Hide the image initially */
+			}
+
+			#question-image.fade-in {
+				display: block; /* Show the image when it fades in */
+				opacity: 0;
+				animation: fadeIn 3s forwards;
+			}
+
+			.container {
+				background: #000000;
+				padding: 30px;
+				border-radius: 10px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+				margin: 20px auto;
+				max-width: 800px;
+				text-align: center;
+			}
+
+			#next-question {
+				padding: 10px 20px;
+				font-size: 16px;
+				cursor: pointer;
+				border: none;
+				border-radius: 5px;
+				background-color: #007BFF;
+				color: #fff;
+				transition: background-color 0.3s, transform 0.3s;
+				margin-top: 20px;
+				display: inline-block;
+			}
+
+			#next-question:hover {
+				background-color: #0056b3;
+				transform: scale(1.05);
+			}
+
+			.fade-in {
+				opacity: 0;
+				animation: fadeIn 3s forwards; /* Adjusted to take 3 seconds */
+			}
+
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+				}
+				to {
+					opacity: 1;
+				}
+			}
+		</style>
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<h1 id="logo" style="display: flex; align-items: center; gap: 10px;">
+					<a href="index.html">KRITISK KLIK</a>
+					<img src="https://corolab.dk/wp-content/uploads/HTX-Roskilde.png" alt="HTX Roskilde Logo" style="max-width: 50px; height: auto;">
+				</h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="index.html">Hjem</a></li>
+						<li>
+							<a href="#" style="position: relative; padding-right: 20px;">
+								Mere
+								<span style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); font-size: 0.8em;">▼</span>
+							</a>
+							<ul>
+								<li><a href="left-sidebar.html">AI Bot</a></li>
+								<li><a href="right-sidebar.html">TikTok Vs X</a></li>
+								<li><a href="no-sidebar.html">Test Din Viden</a></li>
+								<li><a href="sandhed.html">Sandhed eller Misinformation?</a></li>
+							</ul>
+						</li>
+						<li><a href="elements.html">Spil</a></li>
+						<li id="auth-section">
+							<a href="om-os.html" class="button primary">Om os</a>
+						</li>
+					</ul>
+				</nav>
+			</header>
+
+		
+			
+					
+			<!-- Main Game Section -->
+			<section class="container">
+				<h2>Sandhed eller Misinformation</h2>
+				<p>Kan du gætte, om en artikel eller et opslag er sandt eller misinformation? Test din viden og få point!</p>
+				<header class="major"></header>
+
+				<div id="game">
+					<img id="question-image" alt="Question Image" />
+					<p class="question" id="question-text"></p>
+					<p id="question-article" style="margin: 20px 0; font-size: 16px; line-height: 1.5;"></p>
+					<div class="options">
+						<button onclick="chooseAnswer(true)">Sandhed</button>
+						<button onclick="chooseAnswer(false)">Misinformation</button>
+					</div>
+					<div id="feedback"></div>
+					<div id="points-display">Point: <span id="points">0</span></div>
+					<button id="next-question" onclick="nextQuestion()" style="display:none;">Næste Spørgsmål</button>
+				</div>
+			</section>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div style="margin-top: 20px; text-align: center;">
+					<img src="images/logo.png" alt="Kritisk Klik Logo" style="max-width: 150px; height: auto;" />
+					<img src="https://corolab.dk/wp-content/uploads/HTX-Roskilde.png" alt="HTX Roskilde Logo" style="max-width: 50px; height: auto;">
+				</div>
+				<ul class="copyright">
+					<li>&copy; Kritisk Klik. All rights reserved.</li><li>Design: <a href="#">YS</a></li>
+				</ul>
+			</footer>
+
+		</div>
+
+		<script>
+			const questions = [
+				{
+					text: "Overskrift: 'Drikkevand kan helbrede kræft'.",
+					article: "Artiklen hævder, at drikkevand har helbredende egenskaber mod kræft uden nogen videnskabelig dokumentation. Den nævner anekdoter fra personer, der påstår at være blevet raske, men ingen forskning eller eksperter er citeret.",
+					image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7kohCRV5sm4hnober9CQuznspZ99wwPmSow&s",
+					isTrue: false,
+					feedback: "Dette er misinformation. Der er ingen videnskabelig dokumentation for, at drikkevand kan helbrede kræft."
+				},
+				{
+					text: "Overskrift: 'Vacciner er sikre og effektive'.",
+					article: "Artiklen beskriver, hvordan vacciner gennemgår omfattende test og godkendelsesprocesser. Den citerer eksperter og sundhedsmyndigheder, der understreger, at vacciner har reduceret forekomsten af mange alvorlige sygdomme.",
+					image: "https://media2.giphy.com/media/n0KNIKsmIGcXoV3YTw/giphy.gif?cid=6c09b9523l089wk3j14mmdslrh6c1ay1lce7161izno8y08c&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=g",
+					isTrue: true,
+					feedback: "Dette er sandt. Vacciner er blevet grundigt testet og er sikre og effektive."
+				},
+				{
+					text: "Overskrift: '5G-netværk forårsager COVID-19'.",
+					article: "Artiklen påstår, at 5G-stråling svækker immunsystemet og gør folk mere modtagelige for COVID-19. Der er ingen videnskabelige kilder eller eksperter nævnt, og påstanden er blevet afvist af WHO og andre sundhedsorganisationer.",
+					image: "https://cdn.dribbble.com/userupload/11289925/file/original-b8cd81e5fe8450aa758e713af02326c7.gif",
+					isTrue: false,
+					feedback: "Dette er misinformation. Der er ingen forbindelse mellem 5G-netværk og COVID-19."
+				},
+				{
+					text: "Overskrift: 'Klimaændringer er en naturlig proces'.",
+					article: "Artiklen hævder, at klimaændringer udelukkende skyldes naturlige variationer i jordens klima. Den ignorerer forskning, der viser, at menneskelig aktivitet, som CO2-udledning, er en væsentlig faktor.",
+					image: "https://thenational.shorthandstories.com/has-climate-change-made-uncontrollable-wildfires-a-fact-of-life/assets/jO7OMkcDUI/fire-gif.gif",
+					isTrue: false,
+					feedback: "Dette er misinformation. Forskning viser, at menneskelig aktivitet er en væsentlig årsag til klimaændringer."
+				},
+				{
+					text: "Overskrift: 'Motion reducerer risikoen for hjertesygdomme'.",
+					article: "Artiklen beskriver, hvordan regelmæssig motion forbedrer hjertesundheden ved at sænke blodtrykket, reducere kolesterol og forbedre blodcirkulationen. Den citerer flere studier og eksperter.",
+					image: "https://media.tenor.com/TjjIK0Mmz6oAAAAM/beer-exercise.gif",
+					isTrue: true,
+					feedback: "Dette er sandt. Regelmæssig motion er kendt for at forbedre hjertesundheden."
+				},
+				{
+					text: "Overskrift: 'Månen er lavet af ost'.",
+					article: "Artiklen er skrevet som en satire og hævder humoristisk, at månen er lavet af ost. Den indeholder ingen videnskabelige fakta og er tydeligt ment som en joke.",
+					image: "https://i.ytimg.com/vi/vXN8uEzO3-8/maxresdefault.jpg",
+					isTrue: false,
+					feedback: "Dette er misinformation. Månen består af sten og mineraler, ikke ost."
+				}
+			];
+
+			let currentQuestion = 0;
+			let points = 0;
+
+			function loadQuestion() {
+				const question = questions[currentQuestion];
+				const image = document.getElementById("question-image");
+				const text = document.getElementById("question-text");
+				const article = document.getElementById("question-article");
+				const buttons = document.querySelectorAll(".options button");
+
+				// Reset content and remove fade-in classes
+				image.classList.remove("fade-in");
+				text.classList.remove("fade-in");
+				article.classList.remove("fade-in");
+				buttons.forEach(button => {
+					button.classList.remove("fade-in");
+					button.style.display = "none"; // Ensure buttons are hidden initially
+					button.disabled = false; // Re-enable buttons for the new question
+				});
+
+				// Apply fade-in animations sequentially
+				setTimeout(() => {
+					text.textContent = question.text;
+					text.classList.add("fade-in");
+				}, 500); // Question text fades in first
+
+				setTimeout(() => {
+					article.textContent = question.article;
+					article.classList.add("fade-in");
+				}, 2000); // Article fades in after 2 seconds
+
+				setTimeout(() => {
+					image.src = question.image;
+					image.classList.add("fade-in");
+				}, 3500); // Image fades in after 3.5 seconds
+
+				setTimeout(() => {
+					buttons.forEach(button => {
+						button.style.display = "inline-block"; // Show buttons
+						button.classList.add("fade-in");
+					});
+				}, 5000); // Buttons fade in after 5 seconds
+
+				document.getElementById("feedback").textContent = "";
+				document.getElementById("next-question").style.display = "none";
+			}
+
+			function chooseAnswer(isTrue) {
+				const question = questions[currentQuestion];
+				const buttons = document.querySelectorAll(".options button");
+
+				// Disable buttons after an answer is selected
+				buttons.forEach(button => {
+					button.disabled = true;
+				});
+
+				if (isTrue === question.isTrue) {
+					points += 10;
+					document.getElementById("feedback").textContent = "Korrekt! " + question.feedback;
+				} else {
+					document.getElementById("feedback").textContent = "Forkert. " + question.feedback;
+				}
+				document.getElementById("points").textContent = points;
+				document.getElementById("next-question").style.display = "block";
+			}
+
+			function nextQuestion() {
+				currentQuestion++;
+				if (currentQuestion < questions.length) {
+					loadQuestion();
+				} else {
+					endGame();
+				}
+			}
+
+			function endGame() {
+				document.getElementById("game").innerHTML = `
+					<h3>Spillet er slut!</h3>
+					<p>Du opnåede ${points} point!</p>
+					<a href="sandhed.html" class="button">Spil igen</a>
+				`;
+			}
+
+			// Load the first question on page load
+			document.addEventListener("DOMContentLoaded", loadQuestion);
+		</script>
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<script src="assets/js/jquery.dropotron.min.js"></script>
+		<script src="assets/js/jquery.scrollex.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+		</script>
+	</body>
+</html>

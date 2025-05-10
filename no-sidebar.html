@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<link rel="icon" href="images/clickbait.jpg">
+		<title>Kritisk Klik</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<header id="header">
+					<h1 id="logo" style="display: flex; align-items: center; gap: 10px;">
+						<a href="index.html">KRITISK KLIK</a>
+						<img src="https://corolab.dk/wp-content/uploads/HTX-Roskilde.png" alt="HTX Roskilde Logo" style="max-width: 50px; height: auto;">
+					</h1>
+					<nav id="nav">
+						<ul>
+							<li><a href="index.html">Hjem</a></li>
+							<li>
+								<a href="#" style="position: relative; padding-right: 20px;">
+									Mere
+									<span style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); font-size: 0.8em;">▼</span>
+								</a>
+								<ul>
+									<li><a href="left-sidebar.html">AI Bot</a></li>
+									<li><a href="right-sidebar.html">TikTok Vs X</a></li>
+									<li><a href="no-sidebar.html">Test Din Viden</a></li>
+									<li><a href="sandhed.html">Sandhed eller Misinformation?</a></li>
+								</ul>
+							</li>
+							<li><a href="elements.html">Spil</a></li>
+							<li id="auth-section">
+								<a href="om-os.html" class="button primary">Om os</a>
+							</li>
+						</ul>
+					</nav>
+				</header>
+
+			<!-- Main -->
+				<div id="main" class="wrapper style1">
+					<div class="container">
+						<header class="major">
+							<h2>Test Din Viden</h2>
+								<p>Interaktivt spørgeskema om misinformation og fake news.</p>
+						</header>
+
+						<!-- Content -->
+							<section id="content">
+								<h3>Test din viden om misinformation</h3>
+								<form id="quiz-form" onsubmit="return false;">
+									<div>
+										<label for="question1"><strong>1. Hvad er misinformation?</strong></label>
+										<select id="question1" name="question1" required>
+											<option value="" disabled selected>Vælg et svar</option>
+											<option value="correct">Forkert eller vildledende information</option>
+											<option value="wrong">En sandhed, der altid er korrekt</option>
+											<option value="wrong">En form for reklame</option>
+										</select>
+									</div>
+									<div>
+										<label for="question2"><strong>2. Hvordan kan du identificere fake news?</strong></label>
+										<select id="question2" name="question2" required>
+											<option value="" disabled selected>Vælg et svar</option>
+											<option value="correct">Ved at tjekke kilden og faktatjekke</option>
+											<option value="wrong">Ved at stole på overskriften</option>
+											<option value="wrong">Ved at dele det med det samme</option>
+										</select>
+									</div>
+									<div>
+										<label for="question3"><strong>3. Hvad kan algoritmer på sociale medier gøre?</strong></label>
+										<select id="question3" name="question3" required>
+											<option value="" disabled selected>Vælg et svar</option>
+											<option value="correct">Forstærke dine eksisterende holdninger</option>
+											<option value="wrong">Garantere sandheden</option>
+											<option value="wrong">Fjerne alt falsk indhold</option>
+										</select>
+									</div>
+									<div style="margin-top: 20px;">
+										<button type="button" class="button primary" onclick="handleQuizSubmit()">Se dine svar</button>
+									</div>
+								</form>
+								<div id="quiz-result" style="display: none; margin-top: 20px;">
+									<h3>Dine resultater</h3>
+									<p id="result-message"></p>
+									<div id="result-analysis"></div>
+									<div id="user-answers" style="margin-top: 20px;">
+										<h4>Dine svar:</h4>
+										<ul id="answers-list"></ul>
+									</div>
+								</div>
+
+								<!-- Google Form -->
+								<div style="margin-top: 40px;">
+									<h3>Giv os din feedback</h3>
+									<p>Udfyld venligst dette spørgeskema for at hjælpe os med at forbedre vores indhold:</p>
+									<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdgN7GXyyJwKUZhl2F_qVYxbCajDbLp6fuUkZJaXmMnEnvWWQ/viewform?usp=dialog" width="100%" height="600" frameborder="0" marginheight="0" marginwidth="0">Indlæser…</iframe>
+								</div>
+							</section>
+					</div>
+				</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+			</ul>
+			<div style="margin-top: 20px; text-align: center;">
+				<img src="images/logo.png" alt="Kritisk Klik Logo" style="max-width: 150px; height: auto;" />
+				<img src="https://corolab.dk/wp-content/uploads/HTX-Roskilde.png" alt="HTX Roskilde Logo" style="max-width: 50px; height: auto;">
+			</div>
+			<ul class="copyright">
+				<li>&copy; Kritisk Klik. All rights reserved.</li><li>Design: <a href="#">YS</a></li>
+			</ul>
+		</footer>
+
+		</div>
+
+		<!-- Sign-Up Modal -->
+		<div id="signup-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%) scale(0.9); background:#fff; padding:30px; border-radius:10px; box-shadow:0 8px 16px rgba(0,0,0,0.3); z-index:1000; transition:transform 0.3s ease, opacity 0.3s ease; opacity:0;">
+			<h2 style="margin-bottom:20px; font-family:'Arial', sans-serif; color:#333; text-align:center;">Opret Din Bruger</h2>
+			<form id="signup-form" style="display:flex; flex-direction:column; gap:15px;">
+				<div>
+					<label for="signup-email" style="display:block; font-size:14px; color:#555; margin-bottom:5px;">Email:</label>
+					<input type="email" id="signup-email" name="email" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:5px; font-size:14px; box-sizing:border-box; color:black;" />
+				</div>
+				<div>
+					<label for="signup-password" style="display:block; font-size:14px; color:#555; margin-bottom:5px;">Password:</label>
+					<input type="password" id="signup-password" name="password" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:5px; font-size:14px; box-sizing:border-box; color:black;" />
+				</div>
+				<div style="display:flex; justify-content:space-between; margin-top:20px;">
+					<button type="submit" class="button primary" style="padding:12px 25px; background:#007BFF; color:white; border:none; border-radius:5px; cursor:pointer; font-size:16px; font-family:'Arial', sans-serif; font-weight:bold; transition:background 0.3s;">
+						Sign Up
+					</button>
+					<button type="button" onclick="closeModal()" class="button" style="padding:12px 25px; background:#000; color:white; border:none; border-radius:5px; cursor:pointer; font-size:16px; font-family:'Arial', sans-serif; font-weight:bold; transition:background 0.3s;">
+						Cancel
+					</button>
+				</div>
+			</form>
+		</div>
+
+		<!-- Modal Overlay -->
+		<div id="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;" onclick="closeModal()"></div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/jquery.dropotron.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script>
+				// Open modal
+				document.querySelector('.button.primary[href="#signup-modal"]').addEventListener('click', function(event) {
+					event.preventDefault();
+					const modal = document.getElementById('signup-modal');
+					const overlay = document.getElementById('modal-overlay');
+					modal.style.display = 'block';
+					overlay.style.display = 'block';
+					setTimeout(() => {
+						modal.style.transform = 'translate(-50%, -50%) scale(1)';
+						modal.style.opacity = '1';
+					}, 10);
+				});
+
+				// Close modal
+				function closeModal() {
+					const modal = document.getElementById('signup-modal');
+					const overlay = document.getElementById('modal-overlay');
+					modal.style.transform = 'translate(-50%, -50%) scale(0.9)';
+					modal.style.opacity = '0';
+					setTimeout(() => {
+						modal.style.display = 'none';
+						overlay.style.display = 'none';
+					}, 300);
+				}
+
+				// Handle form submission
+				document.getElementById('signup-form').addEventListener('submit', function(event) {
+					event.preventDefault();
+					const email = document.getElementById('signup-email').value;
+					const password = document.getElementById('signup-password').value;
+
+					// Simulate sign-up and login
+					if (email && password) {
+						alert('Sign-up successful!');
+						closeModal();
+
+						// Save signed-in state in localStorage
+						localStorage.setItem('signedInUser', email);
+
+						// Update UI to show logged-in state
+						updateAuthSection(email);
+					}
+				});
+
+				// Update the auth section based on signed-in state
+				function updateAuthSection(email) {
+					const authSection = document.getElementById('auth-section');
+					authSection.innerHTML = `
+						<span style="margin-right:10px; font-size:14px; color:white;">Logged in as: ${email}</span>
+						<a href="#" onclick="logout()" class="button" style="padding:5px 15px; background:#FF4D4D; color:white; border:none; border-radius:5px; cursor:pointer; font-size:14px;">Profil</a>
+					`;
+				}
+
+				// Log out function
+				function logout() {
+					localStorage.removeItem('signedInUser');
+					const authSection = document.getElementById('auth-section');
+					authSection.innerHTML = `<a href="spil.html?redirect=${window.location.pathname}" class="button primary">Se Profil</a>`;
+				}
+
+				// Check for signed-in state on page load
+				document.addEventListener('DOMContentLoaded', function() {
+					const signedInUser = localStorage.getItem('signedInUser');
+					if (signedInUser) {
+						updateAuthSection(signedInUser);
+					}
+				});
+
+				// Handle quiz form submission
+				function handleQuizSubmit() {
+					let correctAnswers = 0;
+					const totalQuestions = 3;
+					const answersList = document.getElementById('answers-list');
+					answersList.innerHTML = ''; // Ryd tidligere svar
+
+					// Check answers and collect user responses
+					const questions = [
+						{ id: 'question1', correct: 'correct', text: 'Hvad er misinformation?' },
+						{ id: 'question2', correct: 'correct', text: 'Hvordan kan du identificere fake news?' },
+						{ id: 'question3', correct: 'correct', text: 'Hvad kan algoritmer på sociale medier gøre?' }
+					];
+
+					questions.forEach((q, index) => {
+						const userAnswer = document.getElementById(q.id).value;
+						const isCorrect = userAnswer === q.correct;
+						if (isCorrect) correctAnswers++;
+
+						// Tilføj brugerens svar til listen
+						const listItem = document.createElement('li');
+						listItem.innerHTML = `
+							<strong>Spørgsmål ${index + 1}:</strong> ${q.text}<br>
+							<strong>Dit svar:</strong> ${document.querySelector(`#${q.id} option[value="${userAnswer}"]`).textContent}<br>
+							<strong>Korrekt:</strong> ${isCorrect ? 'Ja' : 'Nej'}
+						`;
+						listItem.style.color = isCorrect ? 'green' : 'red';
+						answersList.appendChild(listItem);
+					});
+
+					// Display results
+					const resultMessage = document.getElementById('result-message');
+					const resultAnalysis = document.getElementById('result-analysis');
+
+					resultMessage.textContent = `Du svarede korrekt på ${correctAnswers} ud af ${totalQuestions} spørgsmål.`;
+
+					// Provide detailed analysis
+					let analysis = '';
+					if (correctAnswers === totalQuestions) {
+						analysis = '<p>Fantastisk! Du har en stærk forståelse af misinformation og fake news.</p>';
+					} else if (correctAnswers === 2) {
+						analysis = '<p>Godt klaret! Du har en god forståelse, men der er stadig plads til forbedring.</p>';
+					} else if (correctAnswers === 1) {
+						analysis = '<p>Du har en grundlæggende forståelse, men vi anbefaler, at du lærer mere om emnet.</p>';
+					} else {
+						analysis = '<p>Det ser ud til, at du har svært ved at identificere misinformation. Vi anbefaler, at du gennemgår vores ressourcer for at lære mere.</p>';
+					}
+
+					resultAnalysis.innerHTML = analysis;
+					document.getElementById('quiz-result').style.display = 'block';
+				}
+			</script>
+
+	</body>
+</html>
